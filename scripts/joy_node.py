@@ -50,8 +50,8 @@ class joy_node:
         rospy.spin()
         
     def JoyCallback(self, joy):
-        # For Jetson AGX Xavier
         if (joy.buttons[6] == 1 or joy.buttons[7] == 1):        # L1 or R1 is accelerater
+            # Without L1 or R1, robot don't move
             self.cmd_vel.linear.x = joy.axes[1] / 4.0 #2.25         # 0.44 ~ -0.44
             self.cmd_vel.linear.y = joy.axes[0] / 4.0 #2.25         # 0.44 ~ -0.44
             self.cmd_vel.linear.z = 0.0
@@ -59,9 +59,14 @@ class joy_node:
             self.cmd_vel.angular.x = 0.0
             self.cmd_vel.angular.y = 0.0
             self.cmd_vel.angular.z = joy.axes[2] / 4.0 #2.0          # 0.5 ~ -0.5
+            
+            if (joy.buttons[8] == 1 and joy.buttons[9] == 1):   # L2 and R2 is speed up
+                self.cmd_vel.linear.x *= 2
+                self.cmd_vel.linear.y *= 2
+                
             self.pub_vel.publish(self.cmd_vel)
             rospy.loginfo('Running...')
-        else:                                                   # Without L1 or R1, robot don't move
+        elif (joy.buttons[0] == 1 or joy.buttons[1] == 1 or joy.buttons[3] == 1 or joy.buttons[4] == 1):    # Stop
             self.cmd_vel.linear.x = 0.0
             self.cmd_vel.linear.y = 0.0
             self.cmd_vel.linear.z = 0.0
@@ -70,7 +75,9 @@ class joy_node:
             self.cmd_vel.angular.y = 0.0
             self.cmd_vel.angular.z = 0.0
             self.pub_vel.publish(self.cmd_vel)
-    
+        else:                                                   # Without any key input, don't publish any command
+            pass
+            
     def QuitHandler(self):
         rospy.loginfo('Shuting down process...')
         
