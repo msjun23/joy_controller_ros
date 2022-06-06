@@ -4,17 +4,18 @@ from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 
 '''
+Jetson AGX Xavier
 axes: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-buttons: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+buttons: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 Left stick
     left/right: axes[0] (1.0 ~ -1.0)
     up/down:    axes[1] (1.0 ~ -1.0)
-    click:      buttons[9]
+    click:      buttons[13]
 Right stick
-    left/right: axes[3] (1.0 ~ -1.0)
-    up/down:    axes[4] (1.0 ~ -1.0)
-    click:      buttons[10]
+    left/right: axes[2] (1.0 ~ -1.0)
+    up/down:    axes[3] (1.0 ~ -1.0)
+    click:      buttons[14]
 
 Left button
     left/right: axes[6] (1.0 / -1.0)
@@ -22,18 +23,18 @@ Left button
 Right button
     A:          buttons[0]
     B:          buttons[1]
-    X:          buttons[2]
-    Y:          buttons[3]
+    X:          buttons[3]
+    Y:          buttons[4]
     
 Front button
-    L1:         buttons[4]
-    L2:         axes[2] (-1.0)
-    R1:         buttons[5]
-    R2:         axes[5] (-1.0)
+    L1:         buttons[6]
+    L2:         buttons[8], axes[5] (-1.0)
+    R1:         buttons[7]
+    R2:         buttons[9], axes[4] (-1.0)
 
-SELECT:         buttons[6]
-START:          buttons[7]
-HOME:           buttons[8]
+SELECT:         buttons[10]
+START:          buttons[11]
+HOME:           x
 '''
 
 class joy_node:
@@ -49,16 +50,6 @@ class joy_node:
         rospy.spin()
         
     def JoyCallback(self, joy):
-        # if (joy.buttons[4] == 1 or joy.buttons[5] == 1):        # L1 or R1 is accelerater
-        #     self.cmd_vel.linear.x = joy.axes[1] / 2   # 0.5 ~ -0.5
-        #     self.cmd_vel.linear.y = joy.axes[0] / 2   # 0.5 ~ -0.5
-        #     self.cmd_vel.linear.z = 0.0
-            
-        #     self.cmd_vel.angular.x = 0.0
-        #     self.cmd_vel.angular.y = 0.0
-        #     self.cmd_vel.angular.z = joy.axes[3]
-        #     self.pub_vel.publish(self.cmd_vel)
-        #     rospy.loginfo('Running...')
         # For Jetson AGX Xavier
         if (joy.buttons[6] == 1 or joy.buttons[7] == 1):        # L1 or R1 is accelerater
             self.cmd_vel.linear.x = joy.axes[1] / 4.0 #2.25         # 0.44 ~ -0.44
